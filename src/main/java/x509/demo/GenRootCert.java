@@ -20,9 +20,9 @@ import javax.security.auth.x500.X500Principal;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
-import java.security.cert.CertificateFactory;
+import java.security.cert.*;
+import java.security.cert.Certificate;
 import java.security.cert.Extension;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
@@ -55,5 +55,9 @@ public class GenRootCert {
         fos.write(certificate.getEncoded());
         fos.close();
         System.out.println(certificate);
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(null, null);
+        keyStore.setKeyEntry("root", privateKey, "password".toCharArray(), new Certificate[]{certificate});
+        keyStore.store(new FileOutputStream(new File("keystore.jks")), "password".toCharArray());
     }
 }
