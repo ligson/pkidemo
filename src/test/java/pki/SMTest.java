@@ -29,10 +29,11 @@ public class SMTest {
         //cipher
         //Cipher cipher = Cipher.getInstance("SM2",provider);
         String plainText = "hello world";
+        byte[] source = plainText.getBytes();
         CipherAgent cipherAgent = CipherAgent.getInstance("SM2");
 
         cipherAgent.init(Cipher.ENCRYPT_MODE, publicKey);
-        cipherAgent.update(plainText.getBytes());
+        cipherAgent.update(source);
         byte[] buffer = cipherAgent.doFinal();
         System.out.println("加密的结果:"+Arrays.toString(buffer));
         cipherAgent.init(Cipher.DECRYPT_MODE, privateKey);
@@ -57,7 +58,7 @@ public class SMTest {
 
         //has
         MessageDigest digest = MessageDigest.getInstance("SM3");
-        digest.update(plainText.getBytes());
+        digest.update(source);
         byte[] buffer4 = digest.digest();
         System.out.println(Arrays.toString(buffer4));
     }
