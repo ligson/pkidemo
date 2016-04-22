@@ -9,7 +9,7 @@ import java.security.Signature;
 public class SignService {
     public static byte[] sign(byte[] plainText, String signAlg, PrivateKey privateKey) {
         try {
-            Signature sign = Signature.getInstance(signAlg);
+            Signature sign = Signature.getInstance(signAlg, Providers.provider);
             sign.initSign(privateKey);
             sign.update(plainText);
             return sign.sign();
