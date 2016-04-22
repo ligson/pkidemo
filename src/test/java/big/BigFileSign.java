@@ -3,13 +3,10 @@ package big;
 import pkiutil.RSACryptoUtils;
 import x509.demo.KeyGen;
 
-import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.Signature;
 import java.util.Arrays;
 
@@ -17,16 +14,6 @@ import java.util.Arrays;
  * Created by ligson on 2016/4/22.
  */
 public class BigFileSign {
-    /**
-     * RSA最大加密明文大小,只适应与密钥长度为1024
-     */
-    private static final int MAX_ENCRYPT_BLOCK = 117;
-
-    /**
-     * RSA最大解密密文大小,只适应与密钥长度为1024
-     */
-    private static final int MAX_DECRYPT_BLOCK = 128;
-
 
     public static void main(String[] args) throws Exception {
         File file = new File("h2-1.3.170.sign");
