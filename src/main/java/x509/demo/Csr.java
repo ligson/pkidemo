@@ -76,7 +76,8 @@ public class Csr {
         Date notBefore = new Date();
         Date notAfter = new Date(notBefore.getTime() + 10 * 24
                 * 60 * 60 * 1000L);
-        X509Certificate certificate = CertGen.gen(requestInfo.getSubjectPublicKeyInfo(), issuerKeyPair.getPrivate(), issuer, subject, serial, notBefore, notAfter, extensionList);
+        X509Certificate certificate = CertGen.genV3(requestInfo
+                .getSubjectPublicKeyInfo(), issuerKeyPair.getPrivate(), issuer, subject, serial, notBefore, notAfter, extensionList);
         File file = new File(fileName);
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(certificate.getEncoded());
@@ -98,22 +99,23 @@ public class Csr {
         X509Certificate rootCert = genCert(rootSubject, rootKeyPair, rootCsr, "root.cer", extensions);
 
         //颁发二级证书
-        KeyPair secondKeyPair = JksKeyStore.getKeyPair("key2");
-        X500Name secondSubject = X500NameGen.gen("sk", "dev", "second");
-        String secondCsr = genCsr(secondKeyPair, secondSubject);
-        X509Certificate secondCert = genCert(rootSubject, rootKeyPair, secondCsr, "second.cer", extensions);
+        //KeyPair secondKeyPair = JksKeyStore.getKeyPair("key2");
+        //X500Name secondSubject = X500NameGen.gen("sk", "dev", "second");
+        //String secondCsr = genCsr(secondKeyPair, secondSubject);
+        //X509Certificate secondCert = genCert(rootSubject, rootKeyPair,secondCsr, "second.cer", extensions);
 
         //颁发三级证书
-        KeyPair thirdKeyPair = JksKeyStore.getKeyPair("key3");
-        X500Name thirdSubject = X500NameGen.gen("sk", "dev", "third");
-        String thirdCsr = genCsr(thirdKeyPair, thirdSubject);
-        X509Certificate thirdCert = genCert(secondSubject, secondKeyPair, thirdCsr, "third.cer", extensions);
+        //KeyPair thirdKeyPair = JksKeyStore.getKeyPair("key3");
+        //X500Name thirdSubject = X500NameGen.gen("sk", "dev", "third");
+        //String thirdCsr = genCsr(thirdKeyPair, thirdSubject);
+        //X509Certificate thirdCert = genCert(secondSubject, secondKeyPair,thirdCsr, "third.cer", extensions);
 
         //颁发用户证书
         KeyPair userKeyPair = JksKeyStore.getKeyPair("key4");
         X500Name userSubject = X500NameGen.gen("sk", "dev", "user");
         String userCsr = genCsr(userKeyPair, userSubject);
-        X509Certificate userCert = genCert(thirdSubject, thirdKeyPair, userCsr, "user.cer", null);
+        X509Certificate userCert = genCert(rootSubject, rootKeyPair, userCsr, "user" +
+                ".cer", null);
 
         char[] pwd = "password".toCharArray();
         KeyStore keyStore = KeyStore.getInstance("jks");
@@ -121,7 +123,8 @@ public class Csr {
         keyStore.setKeyEntry("root", rootKeyPair.getPrivate(), pwd, new Certificate[]{rootCert});
         //keyStore.setKeyEntry("second", secondKeyPair.getPrivate(), pwd, new Certificate[]{rootCert, secondCert});
         //keyStore.setKeyEntry("third", thirdKeyPair.getPrivate(), pwd, new Certificate[]{rootCert, secondCert, thirdCert});
-        //keyStore.setKeyEntry("user", thirdKeyPair.getPrivate(), pwd, new Certificate[]{rootCert, secondCert, thirdCert, userCert});
+        keyStore.setKeyEntry("user", rootKeyPair.getPrivate(), pwd, new
+                Certificate[]{userCert,rootCert});
         keyStore.store(new FileOutputStream("keystore.jks"), pwd);
 
     }
