@@ -94,7 +94,7 @@ public class Csr {
         extensions.add(new Extension(X509Extension.basicConstraints, false, new BasicConstraints(3)));
         //颁发root证书
         KeyPair rootKeyPair = JksKeyStore.getKeyPair("key1");
-        X500Name rootSubject = X500NameGen.gen("sk", "dev", "root");
+        X500Name rootSubject = X500NameGen.gen("sk", "dev", "localhost");
         String rootCsr = genCsr(rootKeyPair, rootSubject);
         X509Certificate rootCert = genCert(rootSubject, rootKeyPair, rootCsr, "root.cer", extensions);
 
@@ -111,21 +111,24 @@ public class Csr {
         //X509Certificate thirdCert = genCert(secondSubject, secondKeyPair,thirdCsr, "third.cer", extensions);
 
         //颁发用户证书
-        KeyPair userKeyPair = JksKeyStore.getKeyPair("key4");
+        KeyPair userKeyPair = JksKeyStore.getKeyPair("key");
         X500Name userSubject = X500NameGen.gen("sk", "dev", "user");
         String userCsr = genCsr(userKeyPair, userSubject);
         X509Certificate userCert = genCert(rootSubject, rootKeyPair, userCsr, "user" +
                 ".cer", null);
 
         char[] pwd = "password".toCharArray();
+        //服务器证书
         KeyStore keyStore = KeyStore.getInstance("jks");
         keyStore.load(null, null);
         keyStore.setKeyEntry("root", rootKeyPair.getPrivate(), pwd, new Certificate[]{rootCert});
+        keyStore.store(new FileOutputStream("keystore.jks"), pwd);
+
+        //可信证书
         //keyStore.setKeyEntry("second", secondKeyPair.getPrivate(), pwd, new Certificate[]{rootCert, secondCert});
         //keyStore.setKeyEntry("third", thirdKeyPair.getPrivate(), pwd, new Certificate[]{rootCert, secondCert, thirdCert});
-        keyStore.setKeyEntry("user", rootKeyPair.getPrivate(), pwd, new
-                Certificate[]{userCert,rootCert});
-        keyStore.store(new FileOutputStream("keystore.jks"), pwd);
+        keyStore.setCertificateEntry("user", userCert);
+        keyStore.store(new FileOutputStream("truststore.jks"), pwd);
 
     }
 }

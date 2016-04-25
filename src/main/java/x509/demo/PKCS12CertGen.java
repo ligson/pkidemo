@@ -30,28 +30,14 @@ public class PKCS12CertGen {
     public static void main(String[] args) throws Exception {
         char[] pwd = "password".toCharArray();
         KeyStore jks = KeyStore.getInstance("jks");
-        jks.load(new FileInputStream("keystore.jks"), pwd);
-        X509Certificate rootCert = (X509Certificate) jks.getCertificate("root");
-        Certificate[] userCert = jks.getCertificateChain
-                ("user");
-        PrivateKey privateKey = (PrivateKey) jks.getKey("user", pwd);
+        jks.load(new FileInputStream("truststore.jks"), pwd);
+        Certificate userCert = jks.getCertificate("user");
+        PrivateKey privateKey = JksKeyStore.getKeyPair("key4").getPrivate();
         System.out.println("用户撕咬:" + privateKey);
-        RSAPrivateCrtKeyImpl rsaPrivateCrtKey = (RSAPrivateCrtKeyImpl) privateKey;
-        System.out.println(rsaPrivateCrtKey.getFormat());
 
-        KeyPair rootKeyPair = JksKeyStore.getKeyPair("key1");
-        //userCert.verify(rootKeyPair.getPublic());
-        System.out.println("root cert verify success.....");
-        //PKCS12Example.main(args);
-        System.out.println("chain");
-        for (Certificate certificate : userCert) {
-            System.out.println(((X509Certificate) certificate).getSubjectDN());
-        }
-        System.out.println("root:" + rootCert.getSubjectDN());
-        //Certificate[] chain = new Certificate[]{userCert, rootCert};
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
         keyStore.load(null, null);
-        keyStore.setKeyEntry("user", privateKey, pwd, userCert);
+        keyStore.setKeyEntry("user", privateKey, pwd, new Certificate[]{userCert});
         keyStore.store(new FileOutputStream(new File("user.p12")), pwd);
 
     }
