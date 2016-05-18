@@ -866,4 +866,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
 	}
 	// SM2_oid SM3withSM2_oid added by wang_xuanmin 2011-05-06
 	// SM3_oid added by wang_xuanmin 2011-05-28
+	public static void main(String[] args) {
+		System.out.println(SM2_oid);
+	}
 }
