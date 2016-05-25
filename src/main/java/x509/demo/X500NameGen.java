@@ -25,5 +25,8 @@ public class X500NameGen {
         X500Name x500Name = X500Name.getInstance(x509Name.getEncoded());
         System.out.println(x500Name);
         System.out.println(Arrays.equals(x500Name.getEncoded(), x509Name.getEncoded()));
+        X500Name x500Name1 = gen("org", "unit", "cn");
+        System.out.println(x500Name1);
+        System.out.println(Arrays.equals(x500Name.getEncoded(), x500Name1.getEncoded()));
     }
 }

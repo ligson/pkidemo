@@ -2,6 +2,7 @@ package x509.demo;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.cert.X509v1CertificateBuilder;
 import org.bouncycastle.jce.examples.PKCS12Example;
 import org.bouncycastle.jce.provider.JDKPKCS12KeyStore;
@@ -40,5 +41,10 @@ public class PKCS12CertGen {
         keyStore.setKeyEntry("user", privateKey, pwd, new Certificate[]{userCert});
         keyStore.store(new FileOutputStream(new File("user.p12")), pwd);
 
+        X509Name x509Name = new X509Name("O=org,OU=unit,CN=user");
+
+        System.out.println(x509Name);
+        X500Name x500Name = X500Name.getInstance(x509Name.getEncoded());
+        System.out.println(x500Name);
     }
 }
